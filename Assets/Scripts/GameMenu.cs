@@ -54,19 +54,20 @@ public class GameMenu : Menus
             if (PlayerList[i] == true)
             {
                 Character.transform.position = Corners[i].GetSpawnLocaiton();
-                Characters[i] = Instantiate(Character, Corners[i].transform);
-                Corners[i].SetCharacter(Characters[i]);
-                
+                Characters[i] = Instantiate(Character, Corners[i].transform);   
             }
             else
             {
                 AI.transform.position = Corners[i].GetSpawnLocaiton();
-                Characters[i] = Instantiate(AI, Corners[i].transform);
-                Corners[i].SetCharacter(Characters[i]);
-                Characters[i].UpdateCharacter(Random.Range(0, 9));
+                Characters[i] = Instantiate(AI, Corners[i].transform);              
+            }
+            Corners[i].SetCharacter(Characters[i]);
+            Characters[i].UpdateCharacter(Random.Range(0, 9));
+            if (!PlayerList[i])
+            {
                 Corners[i].DisableReady();
             }
-            
+
         }
         DataManager.SetCharacters(Characters);
     }

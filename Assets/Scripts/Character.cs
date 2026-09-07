@@ -23,8 +23,14 @@ public class Character : MonoBehaviour
     int PreviousPosition = 0;
     Board OnBoard;
 
+    CharacterMenu ThisMenu;
+
     List<Item> Inventory = new List<Item>();
 
+    public void Start()
+    {
+        ThisMenu = gameObject.AddComponent<CharacterMenu>();
+    }
 
 
     public bool AbilityCheck(int stat, int number)
@@ -53,6 +59,24 @@ public class Character : MonoBehaviour
             roll = Random.Range(min, limit + 1);
         }
         return roll;
+    }
+
+    public void OnRollClicked()
+    {
+        if (GetStunned())
+        {
+            SetStunned(false);
+            OnBoard.PlayerDone();
+        }
+        if (AbilityCheck(2, 1))
+        {
+            //Display("DiceBoxes");
+        }
+        else
+        {
+            OnBoard.Locations(RollDice(1, 6));
+            OnBoard.UpdatePC();
+        }
     }
 
     public void ItemUsed(int clicked)
@@ -160,16 +184,6 @@ public class Character : MonoBehaviour
     public List<Item> GetInventory()
     {
         return Inventory;
-    }
-
-    public int GetRolled()
-    {
-        return Rolled;
-    }
-
-    public void SetRolled(int Roll)
-    {
-        Rolled = Roll;
     }
 
     public void SetBoard(Board board)

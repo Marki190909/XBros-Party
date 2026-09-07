@@ -89,23 +89,7 @@ public class Board : MonoBehaviour
 
 
 
-    public void OnRollClicked()
-    {
-        if (CurrentPC.GetStunned())
-        {
-            CurrentPC.SetStunned(false);
-            PlayerDone();
-        }
-        if (CurrentPC.AbilityCheck(2, 1))
-        {
-            //Display("DiceBoxes");
-        }
-        else
-        {
-            Locations(CurrentPC.RollDice(1, 6));
-            UpdatePC();
-        }
-    }
+    
 
 
     
