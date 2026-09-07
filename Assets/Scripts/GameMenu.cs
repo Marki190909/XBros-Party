@@ -42,7 +42,7 @@ public class GameMenu : Menus
     {
         if (ReadyAmount == 4)
         {
-            SceneManager.LoadScene(1);
+            DataManager.NewScene();
         }
     }
 
