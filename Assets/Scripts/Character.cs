@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -19,8 +20,8 @@ public class Character : MonoBehaviour
     bool Stunned = false;
     public bool IsAI = false;
     int Position = 0;
-
     int PreviousPosition = 0;
+    Board OnBoard;
 
     List<Item> Inventory = new List<Item>();
 
@@ -28,16 +29,51 @@ public class Character : MonoBehaviour
 
     public bool AbilityCheck(int stat, int number)
     {
-        if(Stats[3] >= 8)
+        if (Stats[3] >= 8)
         {
-            if (Stats[stat] >= number * 4) { return true; }   
+            if (Stats[stat] >= number * 4) { return true; }
             else { return false; }
         }
-        else if(Stats[stat] >= number * 5) { return true; }
+        else if (Stats[stat] >= number * 5) { return true; }
         else { return false; }
     }
-	
-	public void StartTurn()
+
+    public int RollDice(int min, int limit)
+    {
+        int roll = Random.Range(min, limit + 1);
+        return roll;
+    }
+
+
+    public int RollDice(int min, int limit, int removal)
+    {
+        int roll = removal;
+        while (roll == removal)
+        {
+            roll = Random.Range(min, limit + 1);
+        }
+        return roll;
+    }
+
+    public void ItemUsed(int clicked)
+    {
+        Inventory[clicked].ItemMethod();
+
+        Inventory.RemoveAt(clicked);
+        if (AbilityCheck(2, 2) || Inventory[clicked].GetTileType() == "Dice" || Inventory.Count > 1)
+        {
+            Stats[2] -= 11;
+            //Display(board.CurrentPC.Inventory);
+        }
+        else if (Stats[2] < 0)
+        {
+            Stats[2] += 11;
+        }
+        OnBoard.UpdatePC();
+    }
+
+
+    public void StartTurn()
     {
         Inputting = true;
     }
@@ -124,5 +160,25 @@ public class Character : MonoBehaviour
     public List<Item> GetInventory()
     {
         return Inventory;
+    }
+
+    public int GetRolled()
+    {
+        return Rolled;
+    }
+
+    public void SetRolled(int Roll)
+    {
+        Rolled = Roll;
+    }
+
+    public void SetBoard(Board board)
+    {
+        OnBoard = board;
+    }
+
+    public Board GetBoard()
+    {
+        return OnBoard;
     }
 }

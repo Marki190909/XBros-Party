@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 using static UnityEngine.Rendering.DebugUI;
 using Random = UnityEngine.Random;
@@ -15,7 +16,7 @@ public class Board : MonoBehaviour
 
     TileBoard aTileBoard = new();
 
-    Queue aQueue = new();
+    Queue aQueue;
 
 
 
@@ -33,15 +34,54 @@ public class Board : MonoBehaviour
         return aTileBoard;
     }
 
+    public void Initialize(Character[] characters)
+    {
+        aQueue = new Queue(new Character[80]);
+        int[] Rolls = new int[4];
+        for(int i = 0; i < 3; i++)
+        {
+            characters[i].transform.position = new Vector2(6,7);
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            Rolls[i] = characters[i].RollDice(1,20);
+        }
+
+        Character LargestCharacter;
+
+        int LargestNumber = 0;
+
+        for (int i = 0; i < 3; i++)
+        {
+            LargestCharacter = null;
+
+            LargestNumber = 0;
+
+            for(int y = 0; i < 3; i++)
+            {
+                if (Rolls[y] > LargestNumber || characters[y] != null)
+                {
+                    LargestNumber = Rolls[y];
+                    LargestCharacter = characters[y] ; 
+                }
+                characters[y].SetBoard(this);
+                aQueue.GetCharacters()[i] = characters[y];
+                characters[y] = null;
+            }
+        }
+
+        CurrentPC = aQueue.GetCharacters()[0];
+    }
+
     public void OnNumberClicked(int Value)
     {
         if (Value != -1)
         {
-            RollDice(1, 6, Value);
+            Locations(CurrentPC.RollDice(1, 6, Value));
         }
         else
         {
-            RollDice(1, 6);
+            Locations(CurrentPC.RollDice(1, 6));
         }
         UpdatePC();
     }
@@ -62,28 +102,13 @@ public class Board : MonoBehaviour
         }
         else
         {
-            RollDice(1, 6);
+            Locations(CurrentPC.RollDice(1, 6));
             UpdatePC();
         }
     }
 
 
-    public void RollDice(int min, int limit)
-    {
-        int roll = Random.Range(min, limit + 1);
-        Locations(roll);
-    }
-
-
-    public void RollDice(int min, int limit, int removal)
-    {
-        int roll = removal;
-        while (roll == removal)
-        {
-            roll = Random.Range(min, limit + 1);
-        }
-        Locations(roll);
-    }
+    
 
 
 
@@ -93,7 +118,7 @@ public class Board : MonoBehaviour
         {
             int LosingAmount = Convert.ToInt32(Math.Round(CurrentPC.GetGold() / 2d));
             aTileBoard.GetBoardArray()[CurrentPC.GetPosition()].GetMonkeyOwner().SetGold(+LosingAmount);
-            GetCurrentCharacter().SetGold(-LosingAmount);
+            CurrentPC.SetGold(-LosingAmount);
         }
         aTileBoard.GetBoardArray()[CurrentPC.GetPosition()].TileMethod();
         PlayerDone();

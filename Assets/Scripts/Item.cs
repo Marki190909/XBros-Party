@@ -8,13 +8,20 @@ public class Item : MonoBehaviour
 	protected string TileType;
     public virtual void ItemMethod()
 	{ }
+
+	protected Character Owner;
+
+	public string GetTileType()
+	{
+		return TileType;
+	}
 }
 
 class LightDice : Item
 {
     public override void ItemMethod()
 	{
-		board.RollDice(4, 6);
+		Owner.GetBoard().Locations(Owner.RollDice(4, 6));
 	}
 }
 
@@ -24,7 +31,7 @@ class DarkDice : Item
 
 	public override void ItemMethod()
 	{
-		board.RollDice(1, 3);	
+        Owner.GetBoard().Locations(Owner.RollDice(1, 3));	
 	}
 }
 
@@ -32,8 +39,8 @@ class DoubleDice : Item
 {
 	public override void ItemMethod()
 	{
-		board.RollDice(1, 6);
-		board.RollDice(1, 6);
+        Owner.GetBoard().Locations(Owner.RollDice(1, 6));
+        Owner.GetBoard().Locations(Owner.RollDice(1, 6));
 	}
 }
 		
@@ -46,7 +53,7 @@ class Monkey: Item
 		//The player will be able to click the tile they want to set as the Monkey
 		board.GetTileBoard().GetBoardArray()[input].SetIsMonkey(true);
 		board.GetTileBoard().GetBoardArray()[input].SetMonkeyOwner(board.GetCurrentCharacter());
-		board.RollDice(1, 6);
+        Owner.GetBoard().Locations(Owner.RollDice(1, 6));
 	}
 }
 

@@ -8,6 +8,10 @@ public class Queue
     int HeadPointer = 0;
     int TailPointer = 4;
 
+    public Queue(Character[] characters)
+    {
+        Characters = characters; 
+    }
 
     private Character Dequeue()
     {
