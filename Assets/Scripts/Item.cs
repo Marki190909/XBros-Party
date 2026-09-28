@@ -1,7 +1,7 @@
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
-using static UnityEditor.Progress;
-public class Item : MonoBehaviour
+
+// Items are plain data/logic objects, not MonoBehaviour components.
+public class Item
 {
 	string Image;
 	protected Board board;

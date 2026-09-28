@@ -113,6 +113,7 @@ public class Character : MonoBehaviour
     {
         Inputting = true;
         ThisMenu.SetCharacter(this);
+        ThisMenu.gameObject.SetActive(true);
         
     }
 

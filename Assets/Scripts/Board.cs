@@ -12,9 +12,8 @@ using Random = UnityEngine.Random;
 
 public class Board : MonoBehaviour
 {
-    Character CurrentPC = new();
-
-    TileBoard aTileBoard = new();
+    Character CurrentPC;
+    TileBoard aTileBoard = new TileBoard();
 
     Queue aQueue;
 
@@ -75,6 +74,7 @@ public class Board : MonoBehaviour
         }
 
         CurrentPC = aQueue.GetCharacters()[0];
+        CurrentPC.StartTurn();
     }
 
     public void UpdatePC()
