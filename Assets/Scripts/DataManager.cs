@@ -5,7 +5,11 @@ public class DataManager : MonoBehaviour
 {
     private Character[] Characters;
     private static DataManager instance;
-    private static Board board;
+    [SerializeField]
+    private Board BoardPrefab;
+    [SerializeField]
+    private CharacterMenu CharacterMenuPrefab;
+    private Board BoardObject;
     private void Awake()
     {
         if (instance == null)
@@ -23,8 +27,17 @@ public class DataManager : MonoBehaviour
     public void NewScene()
     {
         SceneManager.LoadScene(1);
-        board.Initialize(Characters);
-        Instantiate(board);
+        CharacterMenu ReferenceMenu = Instantiate(CharacterMenuPrefab);
+        ReferenceMenu.gameObject.SetActive(false);
+
+        foreach (Character character in Characters)
+        {
+            character.SetMenu(ReferenceMenu);
+        }
+        BoardObject = Instantiate(BoardPrefab);
+        BoardObject.Initialize(Characters);
+
+        
     }
 
 }

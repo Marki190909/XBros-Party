@@ -1,16 +1,16 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 public class Queue
 {
-    Character[]? Characters;
+    Character[]? Characters = new Character[80];
     int HeadPointer = 0;
     int TailPointer = 4;
 
-    public Queue(Character[] characters)
-    {
-        Characters = characters; 
+    public Queue()
+    { 
     }
 
     private Character Dequeue()
@@ -52,5 +52,10 @@ public class Queue
     public Character[]? GetCharacters()
     {
         return Characters;
+    }
+
+    public void SetCharacters(int index, Character player)
+    {
+        Characters[index] = player;
     }
 }

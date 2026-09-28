@@ -36,65 +36,46 @@ public class Board : MonoBehaviour
 
     public void Initialize(Character[] characters)
     {
-        aQueue = new Queue(new Character[80]);
+        aQueue = new Queue();
         int[] Rolls = new int[4];
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 4; i++)
         {
             characters[i].transform.position = new Vector2(6,7);
         }
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             Rolls[i] = characters[i].RollDice(1,20);
         }
 
-        Character LargestCharacter;
+        Character LargestCharacter = null;
 
         int LargestNumber = 0;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             LargestCharacter = null;
 
             LargestNumber = 0;
 
-            for(int y = 0; i < 3; i++)
+            int NumIndex = 0;
+
+            for(int y = 0; y < 4; y++)
             {
-                if (Rolls[y] > LargestNumber || characters[y] != null)
+                if (Rolls[y] > LargestNumber && characters[y] != null)
                 {
                     LargestNumber = Rolls[y];
-                    LargestCharacter = characters[y] ; 
+                    LargestCharacter = characters[y]; 
+                    NumIndex = y;
                 }
-                characters[y].SetBoard(this);
-                aQueue.GetCharacters()[i] = characters[y];
-                characters[y] = null;
+                
             }
+            characters[NumIndex].SetBoard(this);
+            aQueue.SetCharacters(i,characters[NumIndex]);
+            characters[NumIndex] = null;
         }
 
         CurrentPC = aQueue.GetCharacters()[0];
     }
-
-    public void OnNumberClicked(int Value)
-    {
-        if (Value != -1)
-        {
-            Locations(CurrentPC.RollDice(1, 6, Value));
-        }
-        else
-        {
-            Locations(CurrentPC.RollDice(1, 6));
-        }
-        UpdatePC();
-    }
-
-
-
-
-    
-
-
-    
-
-
 
     public void UpdatePC()
     {

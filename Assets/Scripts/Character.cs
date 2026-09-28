@@ -18,7 +18,7 @@ public class Character : MonoBehaviour
     int Gold = 0;
     bool Inputting = false;
     bool Stunned = false;
-    public bool IsAI = false;
+    protected bool IsAI = false;
     int Position = 0;
     int PreviousPosition = 0;
     Board OnBoard;
@@ -29,7 +29,6 @@ public class Character : MonoBehaviour
 
     public void Start()
     {
-        ThisMenu = gameObject.AddComponent<CharacterMenu>();
     }
 
 
@@ -70,13 +69,26 @@ public class Character : MonoBehaviour
         }
         if (AbilityCheck(2, 1))
         {
-            //Display("DiceBoxes");
+            ThisMenu.ToggleDexterityBoxes();
         }
         else
         {
             OnBoard.Locations(RollDice(1, 6));
             OnBoard.UpdatePC();
         }
+    }
+
+    public void OnNumberClicked(int Value)
+    {
+        if (Value != -1)
+        {
+            OnBoard.Locations(RollDice(1, 6, Value));
+        }
+        else
+        {
+            OnBoard.Locations(RollDice(1, 6));
+        }
+        OnBoard.UpdatePC();
     }
 
     public void ItemUsed(int clicked)
@@ -100,6 +112,8 @@ public class Character : MonoBehaviour
     public void StartTurn()
     {
         Inputting = true;
+        ThisMenu.SetCharacter(this);
+        
     }
 
     public void UpdateCharacter(int lineIndex)
@@ -194,5 +208,10 @@ public class Character : MonoBehaviour
     public Board GetBoard()
     {
         return OnBoard;
+    }
+
+    public void SetMenu(CharacterMenu menu)
+    {
+        ThisMenu = menu;
     }
 }
