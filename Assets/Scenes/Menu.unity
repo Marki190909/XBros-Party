@@ -760,6 +760,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b81ce656de082eb4facdb89bf99e7bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  BoardPrefab: {fileID: 5376238247684776840, guid: f9c84b4cd3430a04cb952f90c7678234, type: 3}
+  CharacterMenuPrefab: {fileID: 2751283724715237952, guid: 7e3f818d7300f5040afc5d94dcd33eeb, type: 3}
 --- !u!4 &615581221
 Transform:
   m_ObjectHideFlags: 0
