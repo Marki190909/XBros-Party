@@ -41,14 +41,16 @@ public class Corner : MonoBehaviour
         else { GameMenu.SetReadyAmount(+1); Button.image.color = Color.red; Ready = true; ScrollBox.SetActive(false); TextBox.text = Character.GetInfo(); TextBox.gameObject.SetActive(true); }
     }
 
-    public void DisableReady()
+    public void ToggleButton()
     {
-        Ready = true;
-        GameMenu.SetReadyAmount(+1);
-        Button.gameObject.SetActive(false);
-        ScrollBox.SetActive(false);
-        TextBox.text = Character.GetInfo();
-        TextBox.gameObject.SetActive(true);
+        if (Ready)
+        {
+            Button.gameObject.SetActive(false);
+        }
+        else
+        {
+            Button.gameObject.SetActive(true);
+        }
     }
 
     public bool GetReady()

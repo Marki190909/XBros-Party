@@ -2,6 +2,8 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.InputSystem;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,15 +13,21 @@ public class MainMenu : MonoBehaviour
     OpeningMenu openingMenu;
     [SerializeField]
     GameMenu gameMenu;
+    [SerializeField]
+    GameObject ConfirmationScreen;
     Menus[] menus;
     Menus currentMenu;
+    bool[] inputsList = new bool[4] { false, false, false, false };
+    int Inputs = 0;
+    private PlayerInputManager inputManager;
+
+    private PlayerInput[] playerInputs = new PlayerInput[4];
 
     private void Start()
     {
-        
-
         //On start it will set the menus Array to contain all menus and set them all to 
         //Not be active and then load the opening menu (first index of menus).
+        inputManager = GetComponent<PlayerInputManager>();
         menus = new Menus[2] { openingMenu, gameMenu };
         foreach (var menu in menus)
         { menu.gameObject.SetActive(false); }
@@ -39,6 +47,17 @@ public class MainMenu : MonoBehaviour
         menus[Index].gameObject.SetActive(true);
         currentMenu = menus[Index];
     }
+
+    public void LoadGameMenu()
+    {
+        gameMenu.SetPlayers(inputsList);
+        gameMenu.SetInputs(playerInputs);
+        LoadMenu(1);
+    }
+    public void LoadOptionsMenu()
+    {
+
+    }
     
     public void ToggleBackground()
     {
@@ -50,5 +69,47 @@ public class MainMenu : MonoBehaviour
         else {Background.SetActive(true);}
     }
 
+    private void OnPlayerJoined(PlayerInput player)
+    {
+        int slot = 0;
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            if (playerInputs[i] == null)
+            {
+                slot = i;
+                break;
+            }
+        }
+
+        if (currentMenu != openingMenu)
+        {
+            ConfirmationScreen.SetActive(true);
+            currentMenu.gameObject.SetActive(false);
+        }
+
+        playerInputs[slot] = player;
+        inputsList[slot] = true;
+        Inputs++;
+    }
+
+    private void OnPlayerLeft(PlayerInput player)
+    {
+        for (int i = 0; i < playerInputs.Length; i++)
+        {
+            if (playerInputs[i] == player)
+            {
+                playerInputs[i] = null;
+                inputsList[i] = false;
+                Inputs--;
+                return;
+            }
+        }
+    }
+
+    public void OnUnderstoodClicked()
+    {
+        gameMenu.OnBackCicked();
+        ConfirmationScreen.SetActive(false);
+    }
 }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VectorGraphics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour
@@ -11,6 +12,7 @@ public class DataManager : MonoBehaviour
     [SerializeField]
     private bool GameType;
     private int[] TempCharacters;
+    PlayerInput[] PlayerInputs;
     private void Awake()
     {
         if (instance == null)
@@ -22,6 +24,18 @@ public class DataManager : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+    }
+
+    public void SetInputs(PlayerInput[] playerInputs)
+    {
+        PlayerInputs = playerInputs;
+        foreach (PlayerInput playerInput in PlayerInputs)
+        {
+            if (playerInput != null)
+            {
+                playerInput.transform.SetParent(this.transform);
+            }
         }
     }
 
@@ -46,6 +60,11 @@ public class DataManager : MonoBehaviour
     public int[] GetCharacters()
     {
         return TempCharacters;
+    }
+
+    public PlayerInput[] GetInputs()
+    {
+        return PlayerInputs;
     }
 
     public void NewScene(bool Type)

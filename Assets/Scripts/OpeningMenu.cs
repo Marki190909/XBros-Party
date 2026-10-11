@@ -8,13 +8,13 @@ public class OpeningMenu : Menus
     {
         //When play is clicked it toggles the background and loads the Game Menu
         mainMenu.ToggleBackground();
-        mainMenu.LoadMenu(1);
+        mainMenu.LoadGameMenu();
     }
 
     public void OnOptionsClicked()
     {
         //When options is clicked it loads the Options Menu
-        mainMenu.LoadMenu(2);
+        mainMenu.LoadOptionsMenu();
     }
 
     public void OnQuitClicked()

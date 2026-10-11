@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using TMPro;
 using Unity.AppUI.UI;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEditor.Build;
 using UnityEngine;
@@ -128,11 +129,10 @@ public class Character : MonoBehaviour
 
     public void StartTurn()
     {
-        playerInput = GetComponent<PlayerInput>();
         playerInput.actions.Enable();
         ThisMenu.SetCharacter(this);
         ThisMenu.gameObject.SetActive(true);
-        
+
     }
 
     public void UpdateCharacter(int lineIndex)
@@ -171,6 +171,14 @@ public class Character : MonoBehaviour
  
     }
 
+    public void SetupInput(PlayerInput input)
+    {
+        playerInput = input;
+        playerInput.actions["Move"].performed += OnMove;
+        playerInput.actions["Move"].canceled += OnMove;
+    }
+
+
     public int GetPosition()
     {
         return Position;
@@ -180,7 +188,7 @@ public class Character : MonoBehaviour
     {
         Position = Number;
     }
-
+        
     public int GetGold()
     {
         return Gold;

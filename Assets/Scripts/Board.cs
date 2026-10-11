@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.PlayerLoop;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
@@ -34,7 +35,7 @@ public class Board : MonoBehaviour
         }
         else
         {
-            Initialize(DataManager.instance.GetCharacters());
+            Initialize(DataManager.instance.GetCharacters(), DataManager.instance.GetInputs());
         }
     }
 
@@ -57,7 +58,7 @@ public class Board : MonoBehaviour
         return aTileBoard;
     }
 
-    public void Initialize(int[] list)
+    public void Initialize(int[] list, PlayerInput[] playerInputs)
     {
         aQueue = new Queue();
         Character[] characters = new Character[4];
@@ -66,6 +67,10 @@ public class Board : MonoBehaviour
         {
             characters[i] = Instantiate(CharacterPrefab, this.transform);
             characters[i].UpdateCharacter(list[i]);
+            if (characters[i] is not AI)
+            {
+                characters[i].SetupInput(playerInputs[i]);
+            }
         }
         for (int i = 0; i < 4; i++)
         {
