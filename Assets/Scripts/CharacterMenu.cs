@@ -3,10 +3,17 @@ using UnityEngine;
 
 public class CharacterMenu : MonoBehaviour
 {
+    Canvas canvas;
     Character Owner;
     [SerializeField]
     GameObject DexterityAbilityBoxes;
+    //Set the Render to be the camera so that it scales with camera
     
+    public void SetCamera(Camera camera)
+    {
+        canvas = GetComponent<Canvas>();
+        canvas.worldCamera = camera;
+    }
     public void SetCharacter(Character _character)
     {
         Owner = _character;
