@@ -340,6 +340,18 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0.4957669
       objectReference: {fileID: 0}
+    - target: {fileID: 3686902900861850432, guid: b28a5c128bbf6534a94009d3cf81d112, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686902900861850432, guid: b28a5c128bbf6534a94009d3cf81d112, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686902900861850432, guid: b28a5c128bbf6534a94009d3cf81d112, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3837743059674531966, guid: b28a5c128bbf6534a94009d3cf81d112, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -760,8 +772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b81ce656de082eb4facdb89bf99e7bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  BoardPrefab: {fileID: 5376238247684776840, guid: f9c84b4cd3430a04cb952f90c7678234, type: 3}
-  CharacterMenuPrefab: {fileID: 2751283724715237952, guid: 7e3f818d7300f5040afc5d94dcd33eeb, type: 3}
+  GameType: 0
 --- !u!4 &615581221
 Transform:
   m_ObjectHideFlags: 0
@@ -790,6 +801,7 @@ GameObject:
   - component: {fileID: 691216114}
   - component: {fileID: 691216113}
   - component: {fileID: 691216112}
+  - component: {fileID: 691216117}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -898,6 +910,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &691216117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691216111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInputManager
+  m_NotificationBehavior: 0
+  m_MaxPlayerCount: 4
+  m_AllowJoining: 1
+  m_JoinBehavior: 2
+  m_PlayerJoinedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlayerLeftEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_JoinAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: 
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a75ee08e-f128-47a4-afc0-0a0bbdea32c4
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    m_Reference: {fileID: 0}
+  m_PlayerPrefab: {fileID: 0}
+  m_SplitScreen: 0
+  m_MaintainAspectRatioInSplitScreen: 0
+  m_FixedNumberOfSplitScreens: -1
+  m_SplitScreenRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &1277907454
 GameObject:
   m_ObjectHideFlags: 0

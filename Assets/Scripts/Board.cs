@@ -14,10 +14,34 @@ public class Board : MonoBehaviour
 {
     Character CurrentPC;
     TileBoard aTileBoard = new TileBoard();
+    [SerializeField]
+    private CharacterMenu CharacterMenuPrefab;
+    [SerializeField]
+    Character CharacterPrefab;
+    [SerializeField]
+    Camera camera;
+    Vector2 MoveCameraValue;
+    float TimeOfValueX;
+    float TimeOfValueY;
 
     Queue aQueue;
 
+    private void Awake()
+    {
+        if (DataManager.instance.GetInfo())
+        {
+            //Load Save
+        }
+        else
+        {
+            Initialize(DataManager.instance.GetCharacters());
+        }
+    }
 
+    private void FixedUpdate()
+    { 
+        CameraCheck();
+    }
 
     public Queue GetQueue()
     {
@@ -33,21 +57,30 @@ public class Board : MonoBehaviour
         return aTileBoard;
     }
 
-    public void Initialize(Character[] characters)
+    public void Initialize(int[] list)
     {
         aQueue = new Queue();
+        Character[] characters = new Character[4];
         int[] Rolls = new int[4];
         for(int i = 0; i < 4; i++)
         {
-            characters[i].transform.position = new Vector2(6,7);
+            characters[i] = Instantiate(CharacterPrefab, this.transform);
+            characters[i].UpdateCharacter(list[i]);
         }
         for (int i = 0; i < 4; i++)
         {
             Rolls[i] = characters[i].RollDice(1,20);
         }
+        CharacterMenu ReferenceMenu = Instantiate(CharacterMenuPrefab);
+        ReferenceMenu.SetCamera(camera);
+        ReferenceMenu.gameObject.SetActive(false);
+
+        foreach (Character character in characters)
+        {
+            character.SetMenu(ReferenceMenu);
+        }
 
         Character LargestCharacter = null;
-
         int LargestNumber = 0;
 
         for (int i = 0; i < 4; i++)
@@ -93,8 +126,6 @@ public class Board : MonoBehaviour
     public void PlayerDone()
     {
         CurrentPC.SetInputting(false);
-        //This Stops the Inputs from the Character that was just done and makes it so the new Character is
-        //able to do their inputs###
         CurrentPC = aQueue.NextTurn();
         CurrentPC.StartTurn();
     }
@@ -141,6 +172,89 @@ public class Board : MonoBehaviour
         if (CurrentPC.Stats[1] < 0)
         {
                 CurrentPC.Stats[1] += 11;
+        }
+    }
+
+    public void MoveCamera(Vector2 move)
+    {
+        if (camera == null)
+        {
+            camera = Camera.main;
+            if (camera == null) return;
+        }
+
+        move.x = move.x * TimeOfValueX;
+        move.y = move.y * TimeOfValueY;
+        Rigidbody2D camerabody = camera.GetComponent<Rigidbody2D>();
+
+        // Calculate half extents of the camera view
+        float halfHeight = camera.orthographicSize;
+        float halfWidth = camera.aspect * halfHeight;
+
+        // Get board bounds
+        Bounds boardBounds = this.GetComponent<Renderer>().bounds;
+
+        // Compute allowed center range so the camera viewport stays inside the board
+        float minX = boardBounds.min.x + halfWidth;
+        float maxX = boardBounds.max.x - halfWidth;
+        float minY = boardBounds.min.y + halfHeight;
+        float maxY = boardBounds.max.y - halfHeight;
+
+        Vector3 pos = camera.transform.position;
+
+        // Predict next position
+        float predictedX = pos.x + move.x;
+        float predictedY = pos.y + move.y;
+
+        // If predicted position is outside bounds make it so it only moves the amount that would make it hit the bound
+        if (predictedX > maxX && move.x > 0)
+        {
+            move.x = (maxX - pos.x);
+        }
+        else if (predictedX < minX && move.x < 0)
+        {
+            move.x = (minX - pos.x);
+        }
+
+        if (predictedY > maxY && move.y > 0)
+        {
+            move.y = (maxY - pos.y);
+        }
+        else if (predictedY < minY && move.y < 0)
+        {
+            move.y = (minY - pos.y);
+        }
+
+        camerabody.linearVelocity = move;
+    }
+
+    public void SetCameraMoveInput(Vector2 move)
+    {
+        Vector2 Clone = MoveCameraValue;
+        MoveCameraValue = move;
+        if(MoveCameraValue.x != Clone.x)
+        {
+            TimeOfValueX = 1;
+        }
+        if (MoveCameraValue.y != Clone.y)
+        {
+            TimeOfValueY = 1;
+        }
+    }
+
+    private void CameraCheck()
+    {
+        if (MoveCameraValue == Vector2.zero && TimeOfValueX == 1 && TimeOfValueY == 1 || MoveCameraValue != Vector2.zero)
+        {
+            MoveCamera(MoveCameraValue);
+        }
+        if (MoveCameraValue.x != 0)
+        {
+            TimeOfValueX += 0.2f;
+        }
+        if (MoveCameraValue.y != 0)
+        {
+            TimeOfValueY += 0.2f;
         }
     }
 }

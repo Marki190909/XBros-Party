@@ -106,4 +106,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   Stats: 0000000000000000000000000000000000000000
-  IsAI: 1
+  camera: {fileID: 0}
