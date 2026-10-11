@@ -1,17 +1,16 @@
 using System.Collections;
 using Unity.VectorGraphics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour
 {
     private Character[] Characters;
-    private static DataManager instance;
+    public static DataManager instance;
     [SerializeField]
-    private Board BoardPrefab;
-    [SerializeField]
-    private CharacterMenu CharacterMenuPrefab;
-    private Board BoardObject;
+    private bool GameType;
+    private int[] TempCharacters;
     private void Awake()
     {
         if (instance == null)
@@ -29,25 +28,34 @@ public class DataManager : MonoBehaviour
     public void SetCharacters(Character[] characters)
     {
         Characters = characters;
-        //big man is going to make them here and then set their positions over there!!
+        CloneCharacters(this.transform);
     }
 
-    public void NewScene()
+    public void CloneCharacters(Transform transform)
     {
+        TempCharacters = new int[Characters.Length];
+        for(int i = 0; i < TempCharacters.Length; i++)
+        {
+            TempCharacters[i] = Characters[i].GetStats();
+        }
+    }
+    public bool GetInfo()
+    {
+        return GameType;
+    }
+    public int[] GetCharacters()
+    {
+        return TempCharacters;
+    }
+
+    public void NewScene(bool Type)
+    {
+        GameType = Type;
         StartCoroutine(LoadAndSetupScene(1));
     }
 
     private IEnumerator LoadAndSetupScene(int sceneIndex)
-    {
-        if (Characters != null)
-        {
-            foreach (var c in Characters)
-            {
-                if (c != null)
-                    DontDestroyOnLoad(c.gameObject);
-            }
-        }
-
+    { 
         var async = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Single);
         if (async == null)
             yield break;
@@ -57,17 +65,6 @@ public class DataManager : MonoBehaviour
 
         var loadedScene = SceneManager.GetSceneByBuildIndex(sceneIndex);
         SceneManager.SetActiveScene(loadedScene);
-
-        CharacterMenu ReferenceMenu = Instantiate(CharacterMenuPrefab);
-        ReferenceMenu.gameObject.SetActive(false);
-
-        foreach (Character character in Characters)
-        {
-            character.SetMenu(ReferenceMenu);
-        }
-        BoardObject = Instantiate(BoardPrefab);
-        BoardObject.Initialize(Characters);
-
     }
 
 
