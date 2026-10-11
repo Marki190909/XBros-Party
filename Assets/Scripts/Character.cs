@@ -5,7 +5,9 @@ using System.Security.Cryptography;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEditor.Build;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
@@ -21,6 +23,12 @@ public class Character : MonoBehaviour
     protected bool IsAI = false;
     int Position = 0;
     int PreviousPosition = 0;
+    [SerializeField]
+    Camera camera;
+
+    PlayerInput playerInput;
+
+    int CharacterNumber = 0;
     Board OnBoard;
 
     CharacterMenu ThisMenu;
@@ -29,8 +37,17 @@ public class Character : MonoBehaviour
 
     public void Start()
     {
+        /*playerInput = GetComponent<PlayerInput>();
+        if (playerInput != null)
+        { 
+            playerInput.actions.Disable();
+        }*/
     }
 
+    public void Update()
+    {
+
+    }
 
     public bool AbilityCheck(int stat, int number)
     {
@@ -111,7 +128,8 @@ public class Character : MonoBehaviour
 
     public void StartTurn()
     {
-        Inputting = true;
+        playerInput = GetComponent<PlayerInput>();
+        playerInput.actions.Enable();
         ThisMenu.SetCharacter(this);
         ThisMenu.gameObject.SetActive(true);
         
@@ -119,10 +137,11 @@ public class Character : MonoBehaviour
 
     public void UpdateCharacter(int lineIndex)
     {
-        //It takes in an integer as a parameter, then finds the text file containing the stats
-        //for the characters, reads it all and at the line of the index specified, splits it
-        //so that the stats can be updated, and at index 5 it contains the sprite so updates
-        //that as well.
+        /*It takes in an integer as a parameter, then finds the text file containing the stats
+        for the characters, reads it all and at the line of the index specified, splits it
+        so that the stats can be updated, and at index 5 it contains the sprite so updates
+        that as well.*/
+        CharacterNumber = lineIndex;
         string[] lines = File.ReadAllLines(Application.dataPath + "/TextFiles/Stats.txt");
         string[] line = lines[lineIndex].Split(',');
         for (int i = 0; i < line.Length; i++)
@@ -188,7 +207,11 @@ public class Character : MonoBehaviour
 
     public void SetInputting(bool inputting)
     {
-        Inputting = inputting; 
+        Inputting = inputting;
+        if (playerInput != null && !IsAI)
+        {
+            playerInput.enabled = inputting;
+        }
     }
 
     public int GetPreviousPosition()
@@ -215,4 +238,35 @@ public class Character : MonoBehaviour
     {
         ThisMenu = menu;
     }
+
+    public int GetStats()
+    {
+        return CharacterNumber;
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        if (OnBoard == null)
+        {
+            return;
+        }
+
+        try
+        {
+            Vector2 move = context.ReadValue<Vector2>();
+            if (context.canceled)
+            {
+                OnBoard.SetCameraMoveInput(Vector2.zero);
+            }
+            else
+            {
+                OnBoard.SetCameraMoveInput(move);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"{name}: Exception in OnMove - {e}");
+        }
+    }
+
 }
