@@ -13,12 +13,13 @@ public class Corner : MonoBehaviour
     [SerializeField]
     GameMenu GameMenu;
     [SerializeField]
-    Vector2 SpawnLocation;
+    Vector3 SpawnLocation;
     [SerializeField]
     GameObject ScrollBox;
     [SerializeField]
     TMP_Text TextBox;
     Character Character;
+    [SerializeField]
     bool Ready = false;
     public void OnCharacterBoxClicked(int Number)
     {

@@ -489,6 +489,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 519420031}
     - target: {fileID: 5376238247684776840, guid: f9c84b4cd3430a04cb952f90c7678234, type: 3}
+      propertyPath: AIPrefab
+      value: 
+      objectReference: {fileID: 2146467537567239893, guid: a201905a81894434090c09ee2df3f157, type: 3}
+    - target: {fileID: 5376238247684776840, guid: f9c84b4cd3430a04cb952f90c7678234, type: 3}
       propertyPath: CharacterPrefab
       value: 
       objectReference: {fileID: 1437502194079398332, guid: e5cf455af23af264c8e063f998524cb0, type: 3}

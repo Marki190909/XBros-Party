@@ -21,6 +21,8 @@ public class Board : MonoBehaviour
     Character CharacterPrefab;
     [SerializeField]
     Camera camera;
+    [SerializeField]
+    AI AIPrefab;
     Vector2 MoveCameraValue;
     float TimeOfValueX;
     float TimeOfValueY;
@@ -65,12 +67,17 @@ public class Board : MonoBehaviour
         int[] Rolls = new int[4];
         for(int i = 0; i < 4; i++)
         {
-            characters[i] = Instantiate(CharacterPrefab, this.transform);
-            characters[i].UpdateCharacter(list[i]);
             if (playerInputs[i] != null)
             {
+                characters[i] = playerInputs[i].GetComponent<Character>();
+                characters[i].transform.SetParent(this.transform);
                 characters[i].SetupInput(playerInputs[i]);
             }
+            else
+            {
+                characters[i] = Instantiate(AIPrefab, this.transform);
+            }
+            characters[i].UpdateCharacter(list[i]);
         }
         for (int i = 0; i < 4; i++)
         {
@@ -235,30 +242,35 @@ public class Board : MonoBehaviour
 
     public void SetCameraMoveInput(Vector2 move)
     {
-        Vector2 Clone = MoveCameraValue;
         MoveCameraValue = move;
-        if(MoveCameraValue.x != Clone.x)
+        if (MoveCameraValue == Vector2.zero)
         {
-            TimeOfValueX = 1;
-        }
-        if (MoveCameraValue.y != Clone.y)
-        {
-            TimeOfValueY = 1;
+            TimeOfValueX = 1f;
+            TimeOfValueY = 1f;
+
+            if (camera == null)
+            {
+                camera = Camera.main;
+            }
+
+            if (camera != null)
+            {
+                Rigidbody2D camerabody = camera.GetComponent<Rigidbody2D>();
+                if (camerabody != null)
+                {
+                    camerabody.linearVelocity = Vector2.zero;
+                }
+            }
         }
     }
 
     private void CameraCheck()
     {
-        if (MoveCameraValue == Vector2.zero && TimeOfValueX == 1 && TimeOfValueY == 1 || MoveCameraValue != Vector2.zero)
+        if (MoveCameraValue != Vector2.zero)
         {
             MoveCamera(MoveCameraValue);
-        }
-        if (MoveCameraValue.x != 0)
-        {
+
             TimeOfValueX += 0.2f;
-        }
-        if (MoveCameraValue.y != 0)
-        {
             TimeOfValueY += 0.2f;
         }
     }

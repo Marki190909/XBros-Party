@@ -277,4 +277,26 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void SetVisible(bool visible)
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = visible;
+        }
+    }
+
+    public int GetAI()
+    {
+        if(IsAI)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 }

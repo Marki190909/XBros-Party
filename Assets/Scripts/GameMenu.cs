@@ -21,29 +21,23 @@ public class GameMenu : Menus
     [SerializeField]
     Character Character;
     [SerializeField]
-    AI AI;
-    [SerializeField]
     DataManager DataManager;
-    Character[] Characters = new Character[4];
+    Character[] Characters;
     [SerializeField]
     int ReadyAmount = 0;
     bool[] PlayerList;
     Corner[] Corners;
 
     PlayerInput[] PlayerInputs;
-    private void Start()
-    {
-        CharacterCreation();
-    }
 
     public void SetInputs(PlayerInput[] playerInputs)
     {
         PlayerInputs = playerInputs;
     }
 
-    public void SetPlayers(bool[] playerList)
+    public void SetPlayers(Character[] characters)
     {
-        PlayerList = playerList;
+        Characters = characters;
     }
 
     public void SetReadyAmount(int readyAmount)
@@ -55,30 +49,29 @@ public class GameMenu : Menus
     {
         if (ReadyAmount == 4)
         {
+            DataManager.SetInputs(PlayerInputs);
             DataManager.NewScene(false);
         }
     }
 
-    private void CharacterCreation()
+    public void CharacterSetup()
     {
-        ReadyAmount = 0;
+        foreach (Character character in Characters)
+        {
+            character.SetVisible(true);
+        }
         Corners = new Corner[4] { TLCorner, TRCorner, BLCorner, BRCorner };
         for (int i = 0; i < Corners.Length; i++)
         {
-            if (PlayerList[i] == true)
+            Characters[i].transform.position = Corners[i].transform.TransformPoint(Corners[i].GetSpawnLocaiton());
+            Characters[i].transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);           
+            if (Characters[i] is not AI)
             {
-                Character.transform.position = Corners[i].GetSpawnLocaiton();
-                Characters[i] = Instantiate(Character, Corners[i].transform);
                 Characters[i].SetupInput(PlayerInputs[i]);
-            }
-            else
-            {
-                AI.transform.position = Corners[i].GetSpawnLocaiton();
-                Characters[i] = Instantiate(AI, Corners[i].transform);              
             }
             Corners[i].SetCharacter(Characters[i]);
             Characters[i].UpdateCharacter(Random.Range(0, 9));
-            if (!PlayerList[i])
+            if ((Characters[i] is AI && !Corners[i].GetReady()) || (Characters[i] is not AI && Corners[i].GetReady()))
             {
                 Corners[i].ReadyClicked();
                 Corners[i].ToggleButton();
@@ -86,20 +79,19 @@ public class GameMenu : Menus
 
         }
         DataManager.SetCharacters(Characters);
-        DataManager.SetInputs(PlayerInputs);
     }
 
     public void OnBackCicked()
     {
+        foreach (Character character in Characters)
+        {
+            character.SetVisible(false);
+        }
         mainMenu.LoadMenu(0);
         mainMenu.ToggleBackground();
-        for(int i = 0; i < 4; i++)
-        {
-            Characters[i] = null;
-        }
         for (int i = 0; i < Corners.Length; i++)
         {
-            if (Corners[i].GetReady() && PlayerList[i])
+            if (Corners[i].GetReady() && Characters[i] is not AI)
             {
                 Corners[i].ReadyClicked();
             }

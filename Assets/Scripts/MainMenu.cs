@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,9 +17,13 @@ public class MainMenu : MonoBehaviour
     GameMenu gameMenu;
     [SerializeField]
     GameObject ConfirmationScreen;
+    [SerializeField]
+    AI AI;
+    [SerializeField]
+    Graphic CursorImage;
     Menus[] menus;
     Menus currentMenu;
-    bool[] inputsList = new bool[4] { false, false, false, false };
+    Character[] Characters = new Character[4];
     int Inputs = 0;
     private PlayerInputManager inputManager;
 
@@ -32,6 +38,10 @@ public class MainMenu : MonoBehaviour
         foreach (var menu in menus)
         { menu.gameObject.SetActive(false); }
         LoadMenu(0);
+        for (int i = 0; i < Characters.Length; i++)
+        {
+            Characters[i] = Instantiate(AI);
+        }
     }
 
     public void LoadMenu(int Index)
@@ -50,9 +60,15 @@ public class MainMenu : MonoBehaviour
 
     public void LoadGameMenu()
     {
-        gameMenu.SetPlayers(inputsList);
+        gameMenu.SetPlayers(Characters);
         gameMenu.SetInputs(playerInputs);
         LoadMenu(1);
+        gameMenu.CharacterSetup();
+    }
+
+    public void LoadOpeningMenu()
+    {
+        LoadMenu(0);
     }
     public void LoadOptionsMenu()
     {
@@ -69,12 +85,12 @@ public class MainMenu : MonoBehaviour
         else {Background.SetActive(true);}
     }
 
-    private void OnPlayerJoined(PlayerInput player)
+    public void OnPlayerJoined(PlayerInput player)
     {
         int slot = 0;
         for (int i = 0; i < playerInputs.Length; i++)
         {
-            if (playerInputs[i] == null)
+            if (Characters[i] is AI)
             {
                 slot = i;
                 break;
@@ -83,12 +99,22 @@ public class MainMenu : MonoBehaviour
 
         if (currentMenu != openingMenu)
         {
+            if (currentMenu == gameMenu)
+            {
+                foreach (Character character in Characters)
+                {
+                    character.SetVisible(false);
+                }
+                gameMenu.OnBackCicked();
+            }
             ConfirmationScreen.SetActive(true);
             currentMenu.gameObject.SetActive(false);
         }
-
+        Destroy(Characters[slot].gameObject);
         playerInputs[slot] = player;
-        inputsList[slot] = true;
+        Characters[slot] = player.GetComponent<Character>();
+        Characters[slot].GetComponent<VirtualMouseInput>().cursorGraphic = CursorImage;
+        Debug.Log(Characters[slot].GetComponent<VirtualMouseInput>().cursorGraphic);
         Inputs++;
     }
 
@@ -99,7 +125,13 @@ public class MainMenu : MonoBehaviour
             if (playerInputs[i] == player)
             {
                 playerInputs[i] = null;
-                inputsList[i] = false;
+
+                if (Characters[i] != null)
+                {
+                    Destroy(Characters[i].gameObject);
+                }
+
+                Characters[i] = Instantiate(AI);
                 Inputs--;
                 return;
             }
@@ -108,8 +140,8 @@ public class MainMenu : MonoBehaviour
 
     public void OnUnderstoodClicked()
     {
-        gameMenu.OnBackCicked();
         ConfirmationScreen.SetActive(false);
+        LoadMenu(0);
     }
 }
 

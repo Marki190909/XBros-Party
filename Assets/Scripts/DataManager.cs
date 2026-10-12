@@ -42,10 +42,10 @@ public class DataManager : MonoBehaviour
     public void SetCharacters(Character[] characters)
     {
         Characters = characters;
-        CloneCharacters(this.transform);
+        CloneCharacters();
     }
 
-    public void CloneCharacters(Transform transform)
+    public void CloneCharacters()
     {
         TempCharacters = new int[Characters.Length];
         for(int i = 0; i < TempCharacters.Length; i++)
