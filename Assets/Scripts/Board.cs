@@ -67,7 +67,7 @@ public class Board : MonoBehaviour
         {
             characters[i] = Instantiate(CharacterPrefab, this.transform);
             characters[i].UpdateCharacter(list[i]);
-            if (characters[i] is not AI)
+            if (playerInputs[i] != null)
             {
                 characters[i].SetupInput(playerInputs[i]);
             }

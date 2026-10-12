@@ -32,7 +32,7 @@ public class Character : MonoBehaviour
     int CharacterNumber = 0;
     Board OnBoard;
 
-    CharacterMenu ThisMenu;
+    protected CharacterMenu ThisMenu;
 
     List<Item> Inventory = new List<Item>();
 
@@ -127,7 +127,7 @@ public class Character : MonoBehaviour
     }
 
 
-    public void StartTurn()
+    public virtual void StartTurn()
     {
         playerInput.actions.Enable();
         ThisMenu.SetCharacter(this);
